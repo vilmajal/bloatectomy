@@ -38,12 +38,12 @@ class bloatectomy():
         self.regex1 = regex1
         self.regex2 = regex2
         self.postgres_table = postgres_table
-        self.engine  = postgres_engine
+        self.engine = postgres_engine
 
         assert float(sys.version[0:3]) >= 3.7, "Must use python 3.7.0 or higher for the regular expressions to work correctly."
 
         try:
-            if  input_text.split('.')[1] == 'docx' or input_text.split('.')[1] == 'doc':
+            if input_text.split('.')[1] == 'docx' or input_text.split('.')[1] == 'doc':
                 import docx
                 doc = docx.Document(input_text)
                 fullText = []
@@ -94,13 +94,13 @@ class bloatectomy():
         bloatectomy.tokenize_mark(self)
         if self.output=='html':
             bloatectomy.make_html(self)
-        else:
+        else:   #här gjorde jag ändring Williams hjälp behövs
             bloatectomy.make_docx(self)
 
     def make_html(self):
         """Takes the output of the just_replication_detection (list of strings) and returns an html file (in path + filename) for the admission with duplicates highlighted"""
 
-        file_name =  str(self.path) + str(self.filename) + '.html'
+        file_name =  str(self.path) + str(self.filename) + '.html'     #här gjorde jag ändring Williams hjälp behövs
         uniq = str("\n ".join(self.tokens))
         # replace line feed characters with html linebreaks
         uniq = uniq.replace("\n", "<br>")
@@ -238,14 +238,26 @@ class bloatectomy():
         # create hash of tokens
         tokens_set = set()
         tokens_set_add = tokens_set.add
+        pattern = re.compile(r'expect.*?;')
         for token in input_tokens:
             #skip any empty tokens
             if token == '':
                 pass
-            elif token not in tokens_set:
+            elif token not in tokens_set or not pattern.search(token):    #ändring visa william!!!
                 tokens_set_add(token)
                 yield token
             elif remov == False:
                 yield tag + token + tag_end
             elif remov == True:
                 pass
+
+
+'''
+Möte William
+- tokenization-regex borde fixas
+- gör så att den kan läsa tsx-filer
+- byt till regex
+
+
+
+'''

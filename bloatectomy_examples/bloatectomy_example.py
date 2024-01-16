@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from bloatectomy import bloatectomy
 
 text = '''Assessment and Plan
 61 yo male Hep C cirrhosis and HCC presents with probable lower GIB and
@@ -19,8 +19,16 @@ renal failure of unclear duration.
 Abd pain:
 '''
 
-bloatectomy(text, style='highlight',  output='html')
+#bloatectomy(text, style='highlight',  output='html')
 
-bloatectomy('./input/sample_text.txt', style='highlight', display=True, filename='./output/sample_txt_output', output='html', output_numbered_tokens=True, output_original_tokens=True)
+bloatectomy('test.txt', style='highlight', display=True, filename='sample_txsfewft_output', output='html', output_numbered_tokens=True, output_original_tokens=True)
+'''
+bloatectomy('test.txt',
+             filename='./output/sampletxt_output',
+             style='highlight',
+             output='html',
+             output_numbered_tokens=True,
+             output_original_tokens=True )
+'''
 
-bloatectomy('./input/sample_text.docx', style='bold', display=False, filename='./output/sample_docx_output', output='docx')
+#bloatectomy(text, style='bold', display=False, filename='sample_output2', output='html')
