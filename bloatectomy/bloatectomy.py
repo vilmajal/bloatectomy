@@ -60,7 +60,7 @@ class bloatectomy():
                 bloatectomy.main(self)
 
             #TODO: ta in tsx-fil här
-            elif input_text.split('.')[1] == 'txt' or input_text.split('.')[1] == 'tsx':
+            elif input_text.split('.')[1] == 'tsx':
                 with open(input_text) as file:
                     self.input_text = file.read()
                 print(style + "ing duplications in " + input_text + ". Output file = " + path + filename + '.' + output)

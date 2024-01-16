@@ -21,7 +21,7 @@ Abd pain:
 
 #bloatectomy(text, style='highlight',  output='html')
 
-bloatectomy('test2.txt', style='highlight', display=True, filename='sample_txsfewft_output', output='html', output_numbered_tokens=True, output_original_tokens=True)
+bloatectomy('typescript_test.tsx', style='highlight', display=True, filename='sample_txsfewft_output', output='html', output_numbered_tokens=True, output_original_tokens=True)
 '''
 bloatectomy('test.txt',
              filename='./output/sampletxt_output',
