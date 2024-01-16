@@ -26,7 +26,7 @@ import sys
 class bloatectomy():
     def __init__(self, input_text,  path = '', filename='bloatectomized_file',
                  display=False, style='highlight', output='html', output_numbered_tokens=False, output_original_tokens=False,
-                 regex1=r"(.+?\.[\s\n]+)", regex2=r"(?=\n\s*[A-Z1-9#-]+.*)", postgres_engine=None, postgres_table=None):
+                 regex1=r"(.+?\n)", regex2=r"(?=\n\s*[A-Z1-9#-]+.*)", postgres_engine=None, postgres_table=None):
 
         self.path = path
         self.filename = filename
@@ -54,6 +54,13 @@ class bloatectomy():
                 bloatectomy.main(self)
 
             elif input_text.split('.')[1] == 'txt' or input_text.split('.')[1] == 'rtf':
+                with open(input_text) as file:
+                    self.input_text = file.read()
+                print(style + "ing duplications in " + input_text + ". Output file = " + path + filename + '.' + output)
+                bloatectomy.main(self)
+
+            #TODO: ta in tsx-fil här
+            elif input_text.split('.')[1] == 'txt' or input_text.split('.')[1] == 'tsx':
                 with open(input_text) as file:
                     self.input_text = file.read()
                 print(style + "ing duplications in " + input_text + ". Output file = " + path + filename + '.' + output)
@@ -256,7 +263,7 @@ class bloatectomy():
 Möte William
 - tokenization-regex borde fixas
 - gör så att den kan läsa tsx-filer
-- byt till regex
+- byt till regex            DONE
 
 
 

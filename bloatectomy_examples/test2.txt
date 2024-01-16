@@ -1,0 +1,17 @@
+expect(onClick).toBeCalledTimes(0);
+expect(onClick).toBeCalledTimes(23140);
+expect(onClick).toBeCalledTimes(0);
+      it('should not invoke onClick callback when a disabled button is clicked', async () => {
+        const user = userEvent.setup();
+        const onClick = vi.fn();
+        render(
+          <Button onClick={onClick} disabled>
+            A button
+          </Button>
+        );
+
+        await user.click(screen.getByRole('button', { name: 'A button' }));
+
+        expect(onClick).toBeCalledTimes(0);
+      });
+    });
