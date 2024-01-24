@@ -39,6 +39,7 @@ class bloatectomy():
         self.regex2 = regex2
         self.postgres_table = postgres_table
         self.engine = postgres_engine
+        self.expects = []
 
         assert float(sys.version[0:3]) >= 3.7, "Must use python 3.7.0 or higher for the regular expressions to work correctly."
 
@@ -59,7 +60,7 @@ class bloatectomy():
                 print(style + "ing duplications in " + input_text + ". Output file = " + path + filename + '.' + output)
                 bloatectomy.main(self)
 
-            #TODO: ta in tsx-fil här
+            # hämta tsx fil här
             elif input_text.split('.')[1] == 'tsx':
                 with open(input_text) as file:
                     self.input_text = file.read()
@@ -99,34 +100,54 @@ class bloatectomy():
 
     def main(self):
         bloatectomy.tokenize_mark(self)
+        print(self.expects)
         if self.output=='html':
             bloatectomy.make_html(self)
-        else:   #här gjorde jag ändring Williams hjälp behövs
-            bloatectomy.make_docx(self)
+        else:
+            bloatectomy.make_tsx(self)
 
     def make_html(self):
         """Takes the output of the just_replication_detection (list of strings) and returns an html file (in path + filename) for the admission with duplicates highlighted"""
 
-        file_name =  str(self.path) + str(self.filename) + '.html'     #här gjorde jag ändring Williams hjälp behövs
-        uniq = str("\n ".join(self.tokens))
-        # replace line feed characters with html linebreaks
-        uniq = uniq.replace("\n", "<br>")
-        # save bloatectomized file as an html
-        with open(file_name, "w") as file:
-            file.write(uniq)
+        for expect in self.expects:
+            file_name = str(self.path) + str(self.filename) + str(expect) + '.tsx'
+            marked_tokens = self.tokens.copy()
+            if self.style == 'highlight':
+                marked_tokens[expect] = "<mark>" + str(marked_tokens[expect]) + "</mark>"
+            else:
+                marked_tokens.pop(expect)
+            uniq = str("\n ".join(marked_tokens))
+            # replace line feed characters with html linebreaks
+            uniq = uniq.replace("\n", "<br>")
+            # save bloatectomized file as an html
+            with open(file_name, "w") as file:
+                file.write(uniq)
 
-        if self.output_numbered_tokens == True:
-            with open(str(self.path) + str(self.filename) + '_token_numbers.txt',"w") as file:
-                for i in self.numbered_tokens:
-                 file.write(str("$ ".join(i) + '\n'))
+            if self.output_numbered_tokens == True:
+                with open(str(self.path) + str(self.filename) + '_token_numbers.txt',"w") as file:
+                    for i in self.numbered_tokens:
+                     file.write(str("$ ".join(i) + '\n'))
 
-        if self.output_original_numbered_tokens == True:
-            with open(str(self.path) + str(self.filename) + '_original_token_numbers.txt',"w") as file:
-                for i in self.original_numbered_tokens:
-                 file.write(str("$ ".join(i) + '\n'))
+            if self.output_original_numbered_tokens == True:
+                with open(str(self.path) + str(self.filename) + '_original_token_numbers.txt',"w") as file:
+                    for i in self.original_numbered_tokens:
+                     file.write(str("$ ".join(i) + '\n'))
 
         if self.display==True:
-            print(uniq)
+            print(" ")
+
+
+    def make_tsx(self):
+        """Takes the output of the just_replication_detection (list of strings) and returns an html file (in path + filename) for the admission with duplicates highlighted"""
+
+        for expect in self.expects:
+            file_name = str(self.path) + str(self.filename) + str(expect) + '.tsx'
+            marked_tokens = self.tokens.copy()
+            marked_tokens.pop(expect)
+            uniq = str("\n ".join(marked_tokens))
+            # save bloatectomized file as an html
+            with open(file_name, "w") as file:
+                file.write(uniq)
 
     def make_docx(self):
         """Takes the output of the just_replication_detection (list of strings) and returns a docx file (in path + filename) for the admission with duplicates highlighted"""
@@ -246,25 +267,42 @@ class bloatectomy():
         tokens_set = set()
         tokens_set_add = tokens_set.add
         pattern = re.compile(r'expect.*?;')
-        for token in input_tokens:
+        # counter for output-files
+        counter = 1
+        for i, token in enumerate(input_tokens):
+            if pattern.search(token):
+                print("aaaaaaaa           ", token)
+                self.expects.append(i)
+            yield token
             #skip any empty tokens
-            if token == '':
-                pass
-            elif token not in tokens_set or not pattern.search(token):    #ändring visa william!!!
-                tokens_set_add(token)
-                yield token
-            elif remov == False:
-                yield tag + token + tag_end
-            elif remov == True:
-                pass
+           # if token == '':
+            #    yield token
+           # elif token not in tokens_set or not pattern.search(token):
+            #    tokens_set_add(token)
+                # file_name = f"{self.path}output{counter}.html"
+                # with open(file_name, "w") as file:
+                #     tag = '<mark>'
+                #     tag_end = '</mark>'
+                #     file.write(tag + token + tag_end)
+                # counter += 1
+             #   yield token
+
+            #elif remov == False:
+             #   yield tag + token + tag_end
+            #elif remov == True:
+             #   pass
 
 
 '''
 Möte William
-- tokenization-regex borde fixas
-- gör så att den kan läsa tsx-filer
+- tokenization-regex borde fixas DONE
+- gör så att den kan läsa tsx-filer DONE
 - byt till regex            DONE
 
+
+- Ta bort/highlighta en duplicate i taget och sen nästa iteration, lägg tillbaka den och ta bort en ny!  
+    - fråga William om vart detta är mest värt att gör och hur
+        - spontangissning på stället där man skapar tokensarna vill man köra någon "for amount of tokens "
 
 
 '''
